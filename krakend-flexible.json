@@ -1,0 +1,82 @@
+{
+    "$schema": "https://www.krakend.io/schema/v3.json",
+    "version": 3,
+    "name": {{ marshal .service.name }},
+    "timeout": {{ marshal .service.timeout }},
+    "cache_ttl": {{ marshal .service.cache_ttl }},
+    "port": {{ .service.port }},
+
+    {{/* init */}}
+    {{ $payment_host :=  marshal .service.backend_payment_host }}
+    {{ $image_host :=  marshal .service.backend_image_host }}
+    {{ $user_host :=  marshal .service.backend_user_host }}
+
+    "endpoints": [
+        {{ range $idx, $endpoint := .endpoint.endpoint_group}}
+        {{if $idx}},{{end}}
+        {
+        "@comment": "{{ $endpoint.comment }}",
+        "method": "{{ $endpoint.method }}",
+        "output_encoding": "{{ $endpoint.output_encoding }}",
+        "endpoint": "{{ $endpoint.kraken_endpoint }}",
+        "input_query_strings": {{ marshal $endpoint.input_query_strings }},
+        "backend": [
+            {
+                {{ if contains "PAYMENT-SERVICE" $endpoint.comment }}
+                    "host": {{ $payment_host }} ,
+                {{ else if contains "IMAGE-SERVICE" $endpoint.comment }}
+                    "host": {{ $image_host }} ,
+                {{ else }}
+                    "host": {{ $user_host }} ,
+                {{ end }}
+                "url_pattern": "{{ $endpoint.backend_endpoint }}",
+                "method": "{{ $endpoint.method }}",
+                "encoding": "{{ $endpoint.encoding }}",
+                "mapping":  {{ marshal $endpoint.mapping }},
+                "is_collection": {{ marshal $endpoint.is_collection }},
+                "extra_config": {
+                    {{ include "backend_http_config.tmpl" }}
+                }
+            }
+            {{ if contains "AGGREGATION" $endpoint.comment }}
+            ,{
+                {{ if contains "PAYMENT-SERVICE" $endpoint.comment }}
+                    "host": {{ $payment_host }} ,
+                {{ else if contains "IMAGE-SERVICE" $endpoint.comment }}
+                    "host": {{ $image_host }} ,
+                {{ else }}
+                    "host": {{ $user_host }} ,
+                {{ end }}
+                "url_pattern": "{{ $endpoint.backend_endpoint_agg }}",
+                "method": "{{ $endpoint.method_agg }}",
+                "encoding": "{{ $endpoint.encoding_agg }}",
+                "mapping":  {{ marshal $endpoint.mapping_agg }},
+                "is_collection": {{ marshal $endpoint.is_collection_agg }},
+                "extra_config": {
+                    {{ include "backend_http_config.tmpl" }}
+                }
+            }
+            {{ end }}
+        ],
+        "input_headers":[
+            "*"
+        ]
+        ,
+        "extra_config": {
+            {{ include "rate_limit_backend.tmpl" }}
+            {{ if not (contains "PUBLIC" $endpoint.comment) }}
+            ,
+                {{ if contains "ADMIN" $endpoint.comment }}
+                    {{ include "auth_validator_admin.tmpl" }}
+                {{ else if contains "SYSTEM-MANAGER" $endpoint.comment }}
+                    {{ include "auth_validator_system_admin.tmpl" }}
+                {{ else }}
+                    {{ include "auth_validator_backend.tmpl" }}
+                {{ end }}
+            {{ end }}
+        }
+        }
+        {{ end }}
+    ],
+    "extra_config": {{ marshal .service.extra_config }}
+}

@@ -1,0 +1,36 @@
+{
+    "port": 8080,
+    "name": "Krakend Flexible Configuration - Example",
+    "cache_ttl": "3600s",
+    "timeout": "5820s",
+    "backend_payment_host": ["http://10.10.0.11:5320"],
+    "backend_user_host": ["http://10.10.0.13:5340"],
+    "backend_image_host": ["http://10.10.0.14:5310"],
+    "extra_config": {
+      "router": {
+        "hide_version_header": true,
+        "return_error_msg": true,
+        "disable_access_log": true,
+        "forwarded_by_client_ip": true,
+        "remote_ip_headers": [
+          "X-Custom-Ip"
+        ],
+        "logger_skip_paths":[
+          "/__health"
+        ]
+      },
+      "telemetry/logging": {
+        "level": "WARNING",
+        "prefix": "[KRAKEND]",
+        "syslog": true,
+        "stdout": true
+      },
+      "security/cors": {
+        "allow_origins": ["*"],
+        "allow_methods": ["POST", "GET", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        "allow_headers": ["Origin", "Authorization", "Content-Type"],
+        "expose_headers": ["Content-Length"],
+        "max_age": "12h"
+      }
+    }
+  }

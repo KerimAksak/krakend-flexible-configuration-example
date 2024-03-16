@@ -1,0 +1,104 @@
+{
+    "endpoint_group": [
+      {
+        "comment": "PAYMENT-SERVICE: Create Payment",
+        "method": "POST",
+        "kraken_endpoint": "/api/v1/payment/{paymentId}",
+        "backend_endpoint": "/api/v1/payment/{paymentId}",
+        "input_query_strings": [],
+        "is_collection": false,
+        "output_encoding": "no-op",
+        "encoding": "string",
+        "mapping": {
+          "content": "payment_id"
+        }
+      },
+      {
+        "comment": "PAYMENT-SERVICE: Get Payment",
+        "method": "GET",
+        "kraken_endpoint": "/api/v1/payment/{paymentId}",
+        "backend_endpoint": "/api/v1/payment/{paymentId}",
+        "input_query_strings": [],
+        "is_collection": false,
+        "output_encoding": "no-op",
+        "encoding": "json",
+        "mapping": {}
+      },
+      {
+        "comment": "PAYMENT-SERVICE (AGGREGATION): List Payment Of Basket",
+        "method": "GET",
+        "kraken_endpoint": "/api/v1/payment/list/{basketId}",
+        "backend_endpoint": "/api/v1/payment/list/{basketId}",
+        "input_query_strings": [
+          "basketId",
+          "date"
+        ],
+        "is_collection": false,
+        "output_encoding": "json",
+        "encoding": "json",
+        "mapping": {},
+        "method_agg": "GET",
+        "kraken_endpoint_agg": "/api/v1/basket/{basketId}",
+        "backend_endpoint_agg": "/api/v1/basket/{basketId}",
+        "input_query_strings_agg": [],
+        "is_collection_agg": false,
+        "encoding_agg": "json",
+        "mapping_agg": {}
+      },
+      {
+        "comment": "USER-SERVICE: Get User",
+        "method": "GET",
+        "kraken_endpoint": "/api/v1/users",
+        "backend_endpoint": "/api/v1/users",
+        "input_query_strings": [],
+        "is_collection": false,
+        "output_encoding": "no-op",
+        "encoding": "no-op",
+        "mapping": {}
+      },
+      {
+        "comment": "USER-SERVICE: Update User",
+        "method": "PUT",
+        "kraken_endpoint": "/api/v1/users",
+        "backend_endpoint": "/api/v1/users",
+        "input_query_strings": [],
+        "is_collection": false,
+        "output_encoding": "no-op",
+        "encoding": "no-op",
+        "mapping": {}
+      },
+      {
+        "comment": "USER-SERVICE: Get Information - ADMIN",
+        "method": "GET",
+        "kraken_endpoint": "/api/v1/admin/get-information",
+        "backend_endpoint": "/api/v1/admin/get-information",
+        "input_query_strings": [],
+        "is_collection": false,
+        "output_encoding": "no-op",
+        "encoding": "no-op",
+        "mapping": {}
+      },
+      {
+        "comment": "USER-SERVICE: Add User - SYSTEM-MANAGER",
+        "method": "POST",
+        "kraken_endpoint": "/api/v1/system-admin/register",
+        "backend_endpoint": "/api/v1/system-admin/register",
+        "input_query_strings": ["userId"],
+        "is_collection": false,
+        "output_encoding": "no-op",
+        "encoding": "no-op",
+        "mapping": {}
+      },
+      {
+        "comment": "IMAGE-SERVICE (PUBLIC): Download Image",
+        "method": "GET",
+        "kraken_endpoint": "/api/v1/downloads/{imageId}",
+        "backend_endpoint": "/api/v1/downloads/{imageId}",
+        "input_query_strings": [],
+        "is_collection": false,
+        "output_encoding": "no-op",
+        "encoding": "no-op",
+        "mapping": {}
+      }
+    ]
+  }
